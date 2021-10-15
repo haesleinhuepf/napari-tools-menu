@@ -8,7 +8,7 @@
 
 Attaches a customizable Tools menu to napari
 
-![img.png](images/screenshot.png)
+![img.png](https://github.com/haesleinhuepf/napari-tools-menu/raw/main/images/screenshot.png)
 ----------------------------------
 
 ## Usage
@@ -36,12 +36,13 @@ class ExampleQWidget(QWidget):
 ## Menu name suggestions
 
 To keep the Tools menu clean and organized, some suggestions should be made.
-* Create category menus that classify your tool in a way such that a broad audience knows what it's doing. Examples:
+Create category menus that classify your tool in a way such that a broad audience knows what it's doing. Examples:
   * Registration
   * Segmentation
   * Measurement
-  * Visualization  
-* Put a descriptive function name in the menu name first and the implementation behind. Examples:
+  * Visualization
+  * Utilities  
+Put a descriptive function name in the menu name first and the implementation behind. Examples:
   * Segmentation > Threshold (Otsu et al 1979)
   * Segmentation > Threshold (my algorithm)
   * Segmentation > Cell labeling (CellLab)
