@@ -72,6 +72,14 @@ class ToolsMenu(QMenu):
 
 ToolsMenu.menus = {}
 
+def list_registered():
+    entries = sorted(list(ToolsMenu.menus.keys()))
+    for k in entries:
+        thing = ToolsMenu.menus[k][0]
+        print(k)
+        print("  ", inspect.getmodule(thing).__name__)
+        print("  ", thing)
+
 @curry
 def register_action(func: Callable, menu:str) -> Callable:
     ToolsMenu.menus[menu.replace(" > ", ">")] = [func, "action"]
@@ -98,7 +106,13 @@ if not hasattr(napari._qt.qt_main_window._QtMainWindow.__class__, "_add_menus_bk
     def _add_menus(self):
         self._add_menus_bkp()
         self.tools_menu = ToolsMenu(self)
-        self.main_menu.addMenu(self.tools_menu)
+        self.main_menu.insertMenu(self.help_menu.menuAction(), self.tools_menu)
+
+        self.tools_menu.addSeparator()
+        act = self.tools_menu.addAction("Tools Info")
+        def func(whatever=None):
+            list_registered()
+        act.triggered.connect(func)
 
     napari._qt.qt_main_window.Window._add_menus = _add_menus
 
