@@ -36,6 +36,8 @@ class ExampleQWidget(QWidget):
     def __init__(self, napari_viewer):
 ```
 
+Note: This implementation is based on a [monkey patch](https://en.wikipedia.org/wiki/Monkey_patch) of napari, tested with napari 0.4.11. Thus, it might stop working with a future version of napari. For now it is a nice workaround to ease the life of end-users.
+
 ## Menu name suggestions
 
 To keep the Tools menu clean and organized, some suggestions should be made.
