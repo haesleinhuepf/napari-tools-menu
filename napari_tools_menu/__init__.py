@@ -5,7 +5,6 @@ This module is an example of a barebones function plugin for napari
 Replace code below according to your needs.
 """
 import warnings
-#from napari_plugin_engine import napari_hook_implementation
 import napari
 from qtpy.QtWidgets import QMenu
 from napari.utils.translations import trans
@@ -14,7 +13,7 @@ from typing import Callable
 from magicgui import magicgui
 import inspect
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 class ToolsMenu(QMenu):
 
@@ -97,17 +96,10 @@ if not hasattr(napari._qt.qt_main_window._QtMainWindow.__class__, "_add_menus_bk
     napari._qt.qt_main_window.Window._add_menus_bkp = napari._qt.qt_main_window.Window._add_menus
 
     def _add_menus(self):
-        print("Hi")
         self._add_menus_bkp()
         self.tools_menu = ToolsMenu(self)
         self.main_menu.addMenu(self.tools_menu)
-        print("Jack")
 
     napari._qt.qt_main_window.Window._add_menus = _add_menus
-
-# not sure if this is necessary; maybe only in case of plugin call order issues
-#@napari_hook_implementation
-#def napari_experimental_provide_function():
-#    return []
 
 

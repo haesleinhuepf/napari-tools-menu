@@ -20,13 +20,16 @@ All menus and sub-menus will be listed alphabetically.
 ```python
 from napari_tools_menu import register_function, register_action, register_dock_widget
 
+
 @register_action(menu="Utilities > Action")
 def test_function(viewer):
     print("hello")
 
+
 @register_function(menu="Utilities > Function")
-def test_function_with_params(sigma:float=0.5):
+def test_function_with_params(sigma: float = 0.5):
     print("sigma", sigma)
+
 
 @register_dock_widget(menu="Utilities > Widget")
 class ExampleQWidget(QWidget):

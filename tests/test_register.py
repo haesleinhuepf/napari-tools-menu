@@ -1,5 +1,5 @@
 from qtpy.QtWidgets import QWidget, QHBoxLayout, QPushButton
-from napari_tools_menu import register_function, register_action, register_dock_widget
+from napari_tools_menu.__init__ import register_function, register_action, register_dock_widget
 
 @register_action(menu="Utilities > Action")
 def test_function(viewer):
