@@ -5,9 +5,7 @@ This module is an example of a barebones function plugin for napari
 Replace code below according to your needs.
 """
 import warnings
-from enum import Enum
-import numpy as np
-from napari_plugin_engine import napari_hook_implementation
+#from napari_plugin_engine import napari_hook_implementation
 import napari
 from qtpy.QtWidgets import QMenu
 from napari.utils.translations import trans
@@ -110,8 +108,8 @@ if not hasattr(napari._qt.qt_main_window._QtMainWindow.__class__, "_add_menus_bk
     napari._qt.qt_main_window.Window._add_menus = _add_menus
 
 # not sure if this is necessary; maybe only in case of plugin call order issues
-@napari_hook_implementation
-def napari_experimental_provide_function():
-    return []
+#@napari_hook_implementation
+#def napari_experimental_provide_function():
+#    return []
 
 

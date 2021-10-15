@@ -8,12 +8,14 @@
 
 Attaches a customizable Tools menu to napari
 
+![img.png](images/screenshot.png)
 ----------------------------------
 
 ## Usage
 
 Just add napari-tools-menu to the dependencies of your napari-plugin. Afterwards, you can annotate your functions and dock widgets using the following syntax.
-The specified menu path will be used to put your tool in the right place in the tools menu.
+The specified menu path will be used to put your tool in the right place in the tools menu. 
+All menus and sub-menus will be listed alphabetically.
 
 ```python
 from napari_tools_menu import register_function, register_action, register_dock_widget
@@ -42,8 +44,8 @@ To keep the Tools menu clean and organized, some suggestions should be made.
 * Put a descriptive function name in the menu name first and the implementation behind. Examples:
   * Segmentation > Threshold (Otsu et al 1979)
   * Segmentation > Threshold (my algorithm)
-  * Segmentation > Cell labeling (CellDist)
-  * Segmentation > Nuclei segmentation (StarDect)
+  * Segmentation > Cell labeling (CellLab)
+  * Segmentation > Nuclei segmentation (Nuc-Dect)
 
 Again, there are no constraints. However, please make the life of (y)our users easy by keeping this menu well organized.
 
