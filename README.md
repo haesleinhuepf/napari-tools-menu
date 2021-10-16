@@ -8,7 +8,7 @@
 
 Attaches a customizable Tools menu to napari
 
-![img.png](https://github.com/haesleinhuepf/napari-tools-menu/raw/main/images/screenshot.png)
+![img.png](https://github.com/haesleinhuepf/napari-tools-menu/raw/main/images/screencast.gif)
 ----------------------------------
 
 ## Usage
@@ -58,6 +58,25 @@ Put a descriptive function name in the menu name first and the implementation be
   * Segmentation > Threshold (my algorithm)
   * Segmentation > Cell labeling (CellLab)
   * Segmentation > Nuclei segmentation (Nuc-Dect)
+
+Example code:
+```python
+@register_action(menu="Segmentation > Threshold (Otsu et al 1979)")
+def threshold_otsu(viewer):
+    pass
+@register_action(menu="Segmentation > Threshold (my algorithm)")
+def my_algorithm(viewer):
+    pass
+@register_action(menu="Segmentation > Cell labeling (CellLab)")
+def celllab(viewer):
+    pass
+@register_action(menu="Segmentation > Nuclei segmentation (Nuc-Dect)")
+def nucl_dect(viewer):
+    pass
+```
+
+The menu would then look like this:
+![img.png](https://github.com/haesleinhuepf/napari-tools-menu/raw/main/images/screenshot.png)
 
 Again, there are no constraints. However, please make the life of (y)our users easy by keeping this menu well organized.
 
