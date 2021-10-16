@@ -36,6 +36,9 @@ class ExampleQWidget(QWidget):
     def __init__(self, napari_viewer):
 ```
 
+The `register_function` and `register_dock_widget` annotations are made for [analysis functions](https://napari.org/plugins/stable/hook_specifications.html#analysis-hooks) and [graphical user interfaces](https://napari.org/plugins/stable/hook_specifications.html#gui-hooks) as explained in the [napari-plugin tutorial](https://napari.org/plugins/stable/for_plugin_developers.html).
+The `register_action` annotation is made for functions with a single parameter: the napari `viewer`. This function is executed when the user clicks the menu. This might for example be useful for applying a certain operation to all currently selected layers.
+
 Note: This implementation is based on a [monkey patch](https://en.wikipedia.org/wiki/Monkey_patch) of napari, tested with napari 0.4.11. 
 Thus, it might stop working with a future version of napari, e.g. when the [new plugin engine](https://github.com/napari/napari/issues/3115) is finished.
  For now it is a nice workaround to ease the life of end-users.
