@@ -13,7 +13,7 @@ from typing import Callable
 from magicgui import magicgui
 import inspect
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 
 class ToolsMenu(QMenu):
 
@@ -95,25 +95,30 @@ def register_dock_widget(widget, menu:str) -> Callable:
     ToolsMenu.menus[menu.replace(" > ", ">")] = [widget, "dock_widget"]
     return widget
 
+ever_warned = False
 
 # monkey patch the napari menu
 # Why?
 #   https://github.com/chanzuckerberg/napari-hub/issues/237
 #   https://github.com/napari/napari/issues/3015
-if not hasattr(napari._qt.qt_main_window._QtMainWindow.__class__, "_add_menus_bkp"):
-    napari._qt.qt_main_window.Window._add_menus_bkp = napari._qt.qt_main_window.Window._add_menus
+try:
+    if not hasattr(napari._qt.qt_main_window._QtMainWindow.__class__, "_add_menus_bkp"):
+        napari._qt.qt_main_window.Window._add_menus_bkp = napari._qt.qt_main_window.Window._add_menus
 
-    def _add_menus(self):
-        self._add_menus_bkp()
-        self.tools_menu = ToolsMenu(self)
-        self.main_menu.insertMenu(self.help_menu.menuAction(), self.tools_menu)
+        def _add_menus(self):
+            self._add_menus_bkp()
+            self.tools_menu = ToolsMenu(self)
+            self.main_menu.insertMenu(self.help_menu.menuAction(), self.tools_menu)
 
-        self.tools_menu.addSeparator()
-        act = self.tools_menu.addAction("Tools Info")
-        def func(whatever=None):
-            list_registered()
-        act.triggered.connect(func)
+            self.tools_menu.addSeparator()
+            act = self.tools_menu.addAction("Tools Info")
+            def func(whatever=None):
+                list_registered()
+            act.triggered.connect(func)
 
-    napari._qt.qt_main_window.Window._add_menus = _add_menus
-
+        napari._qt.qt_main_window.Window._add_menus = _add_menus
+except:
+    if not ever_warned:
+        warnings.warn("Error in monkey patching napari. Please let @haesleinleinhuepf know at\nhttps://github.com/haesleinhuepf/napari-tools-menu/issues")
+        ever_warned = True
 
