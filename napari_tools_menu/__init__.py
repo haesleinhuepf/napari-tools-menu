@@ -6,6 +6,7 @@ Replace code below according to your needs.
 """
 import warnings
 import napari
+import napari._qt
 from qtpy.QtWidgets import QMenu
 from napari.utils.translations import trans
 from toolz import curry
