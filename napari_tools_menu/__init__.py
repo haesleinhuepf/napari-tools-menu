@@ -44,11 +44,12 @@ class ToolsMenu(QMenu):
         def func(whatever=None):
             # ugh
             napari_viewer = window._qt_window.qt_viewer.viewer
-            action, type_ = action_type_tuple
+            action, type_, args, kwargs = action_type_tuple
             if type_ == "action":
                 action(napari_viewer)
             elif type_ == "function":
-                napari_viewer.window.add_dock_widget(magicgui(action), area='right', name=title)
+                print("handing to magicgui", args, kwargs)
+                napari_viewer.window.add_dock_widget(magicgui(action, *args, **kwargs), area='right', name=title)
             elif type_ == "dock_widget":
                 # Source: https://github.com/napari/napari/blob/1287e618469e765a6db0e80d11e736b738e62823/napari/_qt/qt_main_window.py#L669
                 # if the signature is looking a for a napari viewer, pass it.
@@ -82,18 +83,18 @@ def list_registered():
         print("  ", thing)
 
 @curry
-def register_action(func: Callable, menu:str) -> Callable:
-    ToolsMenu.menus[menu.replace(" > ", ">")] = [func, "action"]
+def register_action(func: Callable, menu:str, *args, **kwargs) -> Callable:
+    ToolsMenu.menus[menu.replace(" > ", ">")] = [func, "action", args, kwargs]
     return func
 
 @curry
-def register_function(func: Callable, menu:str) -> Callable:
-    ToolsMenu.menus[menu.replace(" > ", ">")] = [func, "function"]
+def register_function(func: Callable, menu:str, *args, **kwargs) -> Callable:
+    ToolsMenu.menus[menu.replace(" > ", ">")] = [func, "function", args, kwargs]
     return func
 
 @curry
-def register_dock_widget(widget, menu:str) -> Callable:
-    ToolsMenu.menus[menu.replace(" > ", ">")] = [widget, "dock_widget"]
+def register_dock_widget(widget, menu:str, *args, **kwargs) -> Callable:
+    ToolsMenu.menus[menu.replace(" > ", ">")] = [widget, "dock_widget", args, kwargs]
     return widget
 
 ever_warned = False
