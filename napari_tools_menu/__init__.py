@@ -14,7 +14,7 @@ from typing import Callable
 from magicgui import magicgui
 import inspect
 
-__version__ = "0.1.6"
+__version__ = "0.1.7"
 
 class ToolsMenu(QMenu):
 
