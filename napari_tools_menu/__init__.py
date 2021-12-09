@@ -43,7 +43,7 @@ class ToolsMenu(QMenu):
 
         def func(whatever=None):
             # ugh
-            napari_viewer = window._qt_window.qt_viewer.viewer
+            napari_viewer = window.qt_viewer.viewer
             action, type_, args, kwargs = action_type_tuple
             if type_ == "action":
                 action(napari_viewer)
