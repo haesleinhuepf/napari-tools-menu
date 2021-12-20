@@ -7,12 +7,14 @@ Replace code below according to your needs.
 import warnings
 import napari
 import napari._qt
+import numpy as np
 from qtpy.QtWidgets import QMenu
 from napari.utils.translations import trans
 from toolz import curry
 from typing import Callable
 from magicgui import magicgui
 import inspect
+from functools import wraps
 
 __version__ = "0.1.7"
 
@@ -48,8 +50,7 @@ class ToolsMenu(QMenu):
             if type_ == "action":
                 action(napari_viewer)
             elif type_ == "function":
-                print("handing to magicgui", args, kwargs)
-                napari_viewer.window.add_dock_widget(magicgui(action, *args, **kwargs), area='right', name=title)
+                napari_viewer.window.add_dock_widget(make_gui(action, napari_viewer, *args, **kwargs), area='right', name=title)
             elif type_ == "dock_widget":
                 # Source: https://github.com/napari/napari/blob/1287e618469e765a6db0e80d11e736b738e62823/napari/_qt/qt_main_window.py#L669
                 # if the signature is looking a for a napari viewer, pass it.
@@ -71,6 +72,58 @@ class ToolsMenu(QMenu):
 
         sub_sub_menu.triggered.connect(func)
         return sub_sub_menu
+
+def make_gui(func, viewer, *args, **kwargs):
+    gui = None
+
+    from napari.types import ImageData, LabelsData
+    import inspect
+    sig = inspect.signature(func)
+
+    @wraps(func)
+    def worker_func(*iargs, **ikwargs):
+        data = func(*iargs, **ikwargs)
+        if data is None:
+            return None
+
+        target_layer = None
+
+        if sig.return_annotation in [ImageData, "napari.types.ImageData", LabelsData, "napari.types.LabelsData"]:
+            op_name = func.__name__
+            new_name = f"Result of {op_name}"
+
+            # we now search for a layer that has -this- magicgui attached to it
+            GUI_KEY = 'magic_gui_widget'
+            try:
+                # look for an existing layer
+                target_layer = next(x for x in viewer.layers if isinstance(x.metadata, dict) and x.metadata.get(GUI_KEY) is gui)
+                target_layer.data = data
+                target_layer.name = new_name
+                # layer.translate = translate
+            except StopIteration:
+                # otherwise create a new one
+                if sig.return_annotation in [ImageData, "napari.types.ImageData"]:
+                    target_layer = viewer.add_image(data, name=new_name)
+                elif sig.return_annotation in [LabelsData, "napari.types.LabelsData"]:
+                    target_layer = viewer.add_labels(data, name=new_name)
+
+        if target_layer is not None:
+            # update the workflow manager in case it's installed
+            try:
+                from napari_time_slicer import WorkflowManager
+                workflow_manager = WorkflowManager.install(viewer)
+                workflow_manager.update(target_layer, func, *iargs, **ikwargs)
+            except ImportError:
+                pass
+
+            # we store -this- magicgui so that we can reuse it later
+            target_layer.metadata[GUI_KEY] = gui
+            return None
+        else:
+            return data
+
+    gui = magicgui(worker_func, *args, **kwargs)
+    return gui
 
 ToolsMenu.menus = {}
 
