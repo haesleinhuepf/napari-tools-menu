@@ -93,19 +93,20 @@ def make_gui(func, viewer, *args, **kwargs):
             new_name = f"Result of {op_name}"
 
             # we now search for a layer that has -this- magicgui attached to it
-            GUI_KEY = 'magic_gui_widget'
             try:
                 # look for an existing layer
-                target_layer = next(x for x in viewer.layers if isinstance(x.metadata, dict) and x.metadata.get(GUI_KEY) is gui)
+                target_layer = next(x for x in viewer.layers if x.source.widget is gui)
                 target_layer.data = data
                 target_layer.name = new_name
                 # layer.translate = translate
             except StopIteration:
                 # otherwise create a new one
-                if sig.return_annotation in [ImageData, "napari.types.ImageData"]:
-                    target_layer = viewer.add_image(data, name=new_name)
-                elif sig.return_annotation in [LabelsData, "napari.types.LabelsData"]:
-                    target_layer = viewer.add_labels(data, name=new_name)
+                from napari.layers._source import layer_source
+                with layer_source(widget=gui):
+                    if sig.return_annotation in [ImageData, "napari.types.ImageData"]:
+                        target_layer = viewer.add_image(data, name=new_name)
+                    elif sig.return_annotation in [LabelsData, "napari.types.LabelsData"]:
+                        target_layer = viewer.add_labels(data, name=new_name)
 
         if target_layer is not None:
             # update the workflow manager in case it's installed
@@ -116,8 +117,6 @@ def make_gui(func, viewer, *args, **kwargs):
             except ImportError:
                 pass
 
-            # we store -this- magicgui so that we can reuse it later
-            target_layer.metadata[GUI_KEY] = gui
             return None
         else:
             return data
