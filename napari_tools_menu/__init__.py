@@ -16,7 +16,7 @@ from magicgui import magicgui
 import inspect
 from functools import wraps
 
-__version__ = "0.1.7"
+__version__ = "0.1.8"
 
 class ToolsMenu(QMenu):
 
@@ -111,7 +111,7 @@ def make_gui(func, viewer, *args, **kwargs):
         if target_layer is not None:
             # update the workflow manager in case it's installed
             try:
-                from napari_time_slicer import WorkflowManager
+                from napari_workflows import WorkflowManager
                 workflow_manager = WorkflowManager.install(viewer)
                 workflow_manager.update(target_layer, func, *iargs, **ikwargs)
             except ImportError:
