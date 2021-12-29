@@ -60,7 +60,7 @@ class ToolsMenu(QMenu):
                         kwargs['napari_viewer'] = napari_viewer
                         break
                     if param.annotation in ('napari.viewer.Viewer', napari.Viewer):
-                        kwargs[param.name] = self.qt_viewer.viewer
+                        kwargs[param.name] = napari_viewer
                         break
                     # cannot look for param.kind == param.VAR_KEYWORD because
                     # QWidget allows **kwargs but errs on unknown keyword arguments
