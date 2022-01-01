@@ -2,11 +2,11 @@ from qtpy.QtWidgets import QWidget, QHBoxLayout, QPushButton
 from napari_tools_menu.__init__ import register_function, register_action, register_dock_widget
 
 @register_action(menu="Utilities > Action")
-def test_function(viewer):
+def a_function(viewer):
     print("hello")
 
 @register_function(menu="Utilities > Function")
-def test_function_with_params(sigma:float=0.5):
+def a_function_with_params(sigma:float=0.5):
     print("sigma", sigma)
 
 @register_dock_widget(menu="Utilities > Widget")
@@ -25,27 +25,29 @@ class ExampleQWidget(QWidget):
         print("napari has", len(self.viewer.layers), "layers")
 
 @register_action(menu="Registration > a")
-def test_function1(viewer):
+def a_function1(viewer):
     print("hello")
 @register_action(menu="Segmentation > Threshold (Otsu et al 1979)")
-def test_function2(viewer):
+def a_function2(viewer):
     print("hello")
 @register_action(menu="Measurement > Action")
-def test_function3(viewer):
+def a_function3(viewer):
     print("hello")
 @register_action(menu="Visualization > Action")
-def test_function4(viewer):
+def a_function4(viewer):
     print("hello")
 @register_action(menu="Segmentation > Threshold (my algorithm)")
-def test_function5(viewer):
+def a_function5(viewer):
     print("hello")
 @register_action(menu="Segmentation > Cell labeling (CellLab)")
-def test_function6(viewer):
+def a_function6(viewer):
     print("hello")
 @register_action(menu="Segmentation > Nuclei segmentation (Nuc-Dect)")
-def test_function7(viewer):
+def a_function7(viewer):
     print("hello")
 @register_action(menu="Utilities > Action")
-def test_function8(viewer):
+def a_function8(viewer):
     print("hello")
 
+def test_list(make_napari_viewer):
+    viewer = make_napari_viewer()

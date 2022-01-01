@@ -155,14 +155,19 @@ ever_warned = False
 # Why?
 #   https://github.com/chanzuckerberg/napari-hub/issues/237
 #   https://github.com/napari/napari/issues/3015
+initialized = False
 try:
-    if not hasattr(napari._qt.qt_main_window._QtMainWindow.__class__, "_add_menus_bkp"):
+    if not hasattr(napari._qt.qt_main_window._QtMainWindow.__class__, "_add_menus_bkp") and not initialized:
+        initialized = True
         napari._qt.qt_main_window.Window._add_menus_bkp = napari._qt.qt_main_window.Window._add_menus
-
-        def _add_menus(self):
-            self._add_menus_bkp()
+        print("initialize")
+        def _add_menus_monkey_patched(self, level=0):
+            print("Hello world", self._add_menus)
+            if level < 2:
+                self._add_menus_bkp(level + 1)
             self.tools_menu = ToolsMenu(self)
-            self.main_menu.insertMenu(self.help_menu.menuAction(), self.tools_menu)
+            if hasattr(self, "main_menu"):
+                self.main_menu.insertMenu(self.help_menu.menuAction(), self.tools_menu)
 
             self.tools_menu.addSeparator()
             act = self.tools_menu.addAction("Tools Info")
@@ -170,7 +175,7 @@ try:
                 list_registered()
             act.triggered.connect(func)
 
-        napari._qt.qt_main_window.Window._add_menus = _add_menus
+        napari._qt.qt_main_window.Window._add_menus = _add_menus_monkey_patched
 except:
     if not ever_warned:
         warnings.warn("Error in monkey patching napari. Please let @haesleinleinhuepf know at\nhttps://github.com/haesleinhuepf/napari-tools-menu/issues")
