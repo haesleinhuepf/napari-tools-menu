@@ -20,8 +20,9 @@ __version__ = "0.1.9"
 
 class ToolsMenu(QMenu):
 
-    def __init__(self, window: 'Window'):
+    def __init__(self, window: 'Window', viewer):
         super().__init__(trans._('&Tools'), window._qt_window)
+        self.viewer = viewer
 
         entries = sorted(list(ToolsMenu.menus.keys()))
 
@@ -45,7 +46,7 @@ class ToolsMenu(QMenu):
 
         def func(whatever=None):
             # ugh
-            napari_viewer = window.qt_viewer.viewer
+            napari_viewer = self.viewer
             action, type_, args, kwargs = action_type_tuple
             if type_ == "action":
                 action(napari_viewer)
@@ -161,7 +162,7 @@ try:
 
         def _add_menus(self):
             self._add_menus_bkp()
-            self.tools_menu = ToolsMenu(self)
+            self.tools_menu = ToolsMenu(self, self.qt_viewer.viewer)
             self.main_menu.insertMenu(self.help_menu.menuAction(), self.tools_menu)
 
             self.tools_menu.addSeparator()
