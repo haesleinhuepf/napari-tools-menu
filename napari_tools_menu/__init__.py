@@ -71,6 +71,7 @@ class ToolsMenu(QMenu):
                 wdg = action(**kwargs)
                 dw = napari_viewer.window.add_dock_widget(wdg, name=title)
             if dw is not None:
+                # workaround for https://github.com/napari/napari/issues/4348
                 dw._close_btn = False
 
         sub_sub_menu.triggered.connect(func)
