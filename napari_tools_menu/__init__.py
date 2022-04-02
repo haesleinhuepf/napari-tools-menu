@@ -48,10 +48,11 @@ class ToolsMenu(QMenu):
             # ugh
             napari_viewer = self.viewer
             action, type_, args, kwargs = action_type_tuple
+            dw = None
             if type_ == "action":
                 action(napari_viewer)
             elif type_ == "function":
-                napari_viewer.window.add_dock_widget(make_gui(action, napari_viewer, *args, **kwargs), area='right', name=title)
+                dw = napari_viewer.window.add_dock_widget(make_gui(action, napari_viewer, *args, **kwargs), area='right', name=title)
             elif type_ == "dock_widget":
                 # Source: https://github.com/napari/napari/blob/1287e618469e765a6db0e80d11e736b738e62823/napari/_qt/qt_main_window.py#L669
                 # if the signature is looking a for a napari viewer, pass it.
@@ -68,8 +69,9 @@ class ToolsMenu(QMenu):
 
                 # instantiate the widget
                 wdg = action(**kwargs)
-                napari_viewer.window.add_dock_widget(wdg, name=title)
-
+                dw = napari_viewer.window.add_dock_widget(wdg, name=title)
+            if dw is not None:
+                dw._close_btn = False
 
         sub_sub_menu.triggered.connect(func)
         return sub_sub_menu
