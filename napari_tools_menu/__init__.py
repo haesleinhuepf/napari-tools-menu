@@ -18,7 +18,7 @@ from magicgui import magicgui
 import inspect
 from functools import wraps
 
-__version__ = "0.1.12"
+__version__ = "0.1.14"
 
 class ToolsMenu(QMenu):
 
