@@ -9,6 +9,8 @@ import napari
 import napari._qt
 import numpy as np
 from qtpy.QtWidgets import QMenu
+from qtpy.QtCore import QTimer
+
 from napari.utils.translations import trans
 from toolz import curry
 from typing import Callable
@@ -111,6 +113,30 @@ def make_gui(func, viewer, *args, **kwargs):
                         target_layer = viewer.add_image(data, name=new_name)
                     elif sig.return_annotation in [LabelsData, "napari.types.LabelsData"]:
                         target_layer = viewer.add_labels(data, name=new_name)
+
+        else:
+            # Also handle non-image layers, in case their data is tuples
+            def check_result_is_stored_in_layer():
+                for layer in viewer.layers:
+                    equal_data = True
+                    if type(data) == tuple and type(layer.data) == tuple:
+                        for a, b in zip(data, layer.data):
+                            if a is not b:
+                                equal_data = False
+                                break
+                    else:
+                        equal_data = False
+
+                    if layer.data is data or equal_data:
+                        try:
+                            from napari_workflows import WorkflowManager
+                            workflow_manager = WorkflowManager.install(viewer)
+                            print("delayed updating lyayer", layer.name)
+                            workflow_manager.update(layer, func, *iargs, **ikwargs)
+                        except ImportError:
+                            pass
+
+            QTimer.singleShot(200, check_result_is_stored_in_layer)
 
         if target_layer is not None:
             # update the workflow manager in case it's installed
