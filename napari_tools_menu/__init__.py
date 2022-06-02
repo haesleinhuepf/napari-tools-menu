@@ -82,7 +82,7 @@ class ToolsMenu(QMenu):
 def make_gui(func, viewer, *args, **kwargs):
     gui = None
 
-    from napari.types import ImageData, LabelsData
+    from napari.types import ImageData, LabelsData, PointsData, SurfaceData
     import inspect
     sig = inspect.signature(func)
 
@@ -94,7 +94,8 @@ def make_gui(func, viewer, *args, **kwargs):
 
         target_layer = None
 
-        if sig.return_annotation in [ImageData, "napari.types.ImageData", LabelsData, "napari.types.LabelsData"]:
+        if sig.return_annotation in [ImageData, "napari.types.ImageData", LabelsData, "napari.types.LabelsData",
+                                     PointsData, "napari.types.PointsData", SurfaceData, "napari.types.SurfaceData"]:
             op_name = func.__name__
             new_name = f"Result of {op_name}"
 
@@ -105,6 +106,9 @@ def make_gui(func, viewer, *args, **kwargs):
                 target_layer.data = data
                 target_layer.name = new_name
                 # layer.translate = translate
+                if sig.return_annotation in [PointsData, "napari.types.PointsData"]:
+                    target_layer.size = 0.5
+
             except StopIteration:
                 # otherwise create a new one
                 from napari.layers._source import layer_source
@@ -113,30 +117,11 @@ def make_gui(func, viewer, *args, **kwargs):
                         target_layer = viewer.add_image(data, name=new_name)
                     elif sig.return_annotation in [LabelsData, "napari.types.LabelsData"]:
                         target_layer = viewer.add_labels(data, name=new_name)
-
-        else:
-            # Also handle non-image layers, in case their data is tuples
-            def check_result_is_stored_in_layer():
-                for layer in viewer.layers:
-                    equal_data = True
-                    if type(data) == tuple and type(layer.data) == tuple:
-                        for a, b in zip(data, layer.data):
-                            if a is not b:
-                                equal_data = False
-                                break
-                    else:
-                        equal_data = False
-
-                    if layer.data is data or equal_data:
-                        try:
-                            from napari_workflows import WorkflowManager
-                            workflow_manager = WorkflowManager.install(viewer)
-                            print("delayed updating lyayer", layer.name)
-                            workflow_manager.update(layer, func, *iargs, **ikwargs)
-                        except ImportError:
-                            pass
-
-            QTimer.singleShot(200, check_result_is_stored_in_layer)
+                    elif sig.return_annotation in [PointsData, "napari.types.PointsData"]:
+                        target_layer = viewer.add_points(data, name=new_name)
+                        target_layer.size = 0.5
+                    elif sig.return_annotation in [SurfaceData, "napari.types.SurfaceData"]:
+                        target_layer = viewer.add_surface(data, name=new_name)
 
         if target_layer is not None:
             # update the workflow manager in case it's installed
