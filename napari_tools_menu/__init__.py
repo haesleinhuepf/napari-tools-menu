@@ -18,7 +18,7 @@ from magicgui import magicgui
 import inspect
 from functools import wraps
 
-__version__ = "0.1.15"
+__version__ = "0.1.16"
 
 class ToolsMenu(QMenu):
 
@@ -92,6 +92,14 @@ def make_gui(func, viewer, *args, **kwargs):
         if data is None:
             return None
 
+        # determine scale of passed data
+        scale = None
+        from napari_workflows._workflow import _get_layer_from_data
+        for passed_data in iargs:
+            layer = _get_layer_from_data(viewer, passed_data)
+            if layer is not None and isinstance(layer, napari.layers.Image):
+                scale = layer.scale
+
         target_layer = None
 
         if sig.return_annotation in [ImageData, "napari.types.ImageData", LabelsData, "napari.types.LabelsData",
@@ -122,6 +130,13 @@ def make_gui(func, viewer, *args, **kwargs):
                         target_layer.size = 0.5
                     elif sig.return_annotation in [SurfaceData, "napari.types.SurfaceData"]:
                         target_layer = viewer.add_surface(data, name=new_name)
+
+                # apply scale to data if successfully determined above
+                if scale is not None and target_layer is not None:
+                    if len(target_layer.data.shape) == len(scale):
+                        target_layer.scale = scale
+                    if len(target_layer.data.shape) < len(scale):
+                        target_layer.scale = scale[-len(target_layer.data.shape):]
 
         if target_layer is not None:
             # update the workflow manager in case it's installed
