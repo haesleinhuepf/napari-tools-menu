@@ -1,9 +1,3 @@
-
-"""
-This module is an example of a barebones function plugin for napari
-
-Replace code below according to your needs.
-"""
 import warnings
 import napari
 try:
