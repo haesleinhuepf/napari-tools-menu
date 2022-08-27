@@ -191,7 +191,10 @@ try:
 
         def _add_menus(self):
             self._add_menus_bkp()
-            self.tools_menu = ToolsMenu(self, self.qt_viewer.viewer)
+            import warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter(action='ignore', category=FutureWarning)
+                self.tools_menu = ToolsMenu(self, self.qt_viewer.viewer)
             self.main_menu.insertMenu(self.help_menu.menuAction(), self.tools_menu)
 
             self.tools_menu.addSeparator()
