@@ -115,7 +115,7 @@ def make_gui(func, viewer, *args, **kwargs):
                 target_layer.name = new_name
                 # layer.translate = translate
                 if sig.return_annotation in [PointsData, "napari.types.PointsData"]:
-                    target_layer.size = 0.5
+                    target_layer.size = np.asarray(viewer.dims.range).max() * 0.01
 
             except StopIteration:
                 # otherwise create a new one
@@ -127,7 +127,7 @@ def make_gui(func, viewer, *args, **kwargs):
                         target_layer = viewer.add_labels(data, name=new_name)
                     elif sig.return_annotation in [PointsData, "napari.types.PointsData"]:
                         target_layer = viewer.add_points(data, name=new_name)
-                        target_layer.size = 0.5
+                        target_layer.size = np.asarray(viewer.dims.range).max() * 0.01
                     elif sig.return_annotation in [SurfaceData, "napari.types.SurfaceData"]:
                         target_layer = viewer.add_surface(data, name=new_name)
 
