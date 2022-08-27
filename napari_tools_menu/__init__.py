@@ -6,7 +6,11 @@ Replace code below according to your needs.
 """
 import warnings
 import napari
-import napari._qt
+try:
+    import napari._qt
+except:
+    warnings.warn("importing napari._qt failed")
+    pass
 import numpy as np
 from qtpy.QtWidgets import QMenu
 from qtpy.QtCore import QTimer
