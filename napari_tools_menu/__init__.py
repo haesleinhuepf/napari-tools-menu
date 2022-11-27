@@ -8,7 +8,6 @@ except:
     pass
 import numpy as np
 
-from napari.utils.translations import trans
 from toolz import curry
 from typing import Callable
 from magicgui import magicgui
@@ -20,6 +19,8 @@ __version__ = "0.1.17"
 class ToolsMenu(QMenu):
 
     def __init__(self, window: 'Window', viewer):
+        from napari.utils.translations import trans
+
         super().__init__(trans._('&Tools'), window._qt_window)
         self.viewer = viewer
 
