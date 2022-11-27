@@ -2,12 +2,11 @@ import warnings
 import napari
 try:
     import napari._qt
+    from qtpy.QtWidgets import QMenu
 except:
-    warnings.warn("importing napari._qt failed")
+    warnings.warn("importing QT failed")
     pass
 import numpy as np
-from qtpy.QtWidgets import QMenu
-from qtpy.QtCore import QTimer
 
 from napari.utils.translations import trans
 from toolz import curry
