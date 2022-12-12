@@ -5,12 +5,13 @@ try:
     from qtpy.QtWidgets import QMenu
 except:
     warnings.warn("importing QT failed")
+    class QMenu:
+        pass
     pass
 import numpy as np
 
 from toolz import curry
 from typing import Callable
-from magicgui import magicgui
 import inspect
 from functools import wraps
 
@@ -81,7 +82,9 @@ def make_gui(func, viewer, *args, **kwargs):
     gui = None
 
     from napari.types import ImageData, LabelsData, PointsData, SurfaceData
+    from magicgui import magicgui
     import inspect
+
     sig = inspect.signature(func)
 
     @wraps(func)
