@@ -1,5 +1,8 @@
 import warnings
 
+from toolz import curry
+from typing import Callable
+
 try:
     import napari._qt
     from qtpy.QtWidgets import QMenu
@@ -19,8 +22,6 @@ except ModuleNotFoundError as e:
 
 import numpy as np
 
-from toolz import curry
-from typing import Callable
 import inspect
 from functools import wraps
 
