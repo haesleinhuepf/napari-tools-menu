@@ -1,5 +1,4 @@
 import warnings
-import napari
 try:
     import napari._qt
     from qtpy.QtWidgets import QMenu
@@ -21,6 +20,7 @@ class ToolsMenu(QMenu):
 
     def __init__(self, window: 'Window', viewer):
         from napari.utils.translations import trans
+        import napari
 
         super().__init__(trans._('&Tools'), window._qt_window)
         self.viewer = viewer
