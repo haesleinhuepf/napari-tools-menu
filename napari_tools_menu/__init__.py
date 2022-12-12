@@ -1,12 +1,22 @@
 import warnings
+
 try:
     import napari._qt
     from qtpy.QtWidgets import QMenu
-except:
-    warnings.warn("importing QT failed")
+except ModuleNotFoundError as e:
+    warnings.warn("Importing QT failed; now introducing dummy definitions of QMenu class and register_function decorator.")
+
+    # Define dummy class QMenu, to be used in ToolsMenu below
     class QMenu:
         pass
-    pass
+
+    # Define dummy register_action decorator, so that it can be imported and
+    # used in packages that do not depend on QT
+    @curry
+    def register_action(func: Callable, menu:str, *args, **kwargs) -> Callable:
+        return func
+
+
 import numpy as np
 
 from toolz import curry
