@@ -1,18 +1,27 @@
 import warnings
-import napari
-try:
-    import napari._qt
-except:
-    warnings.warn("importing napari._qt failed")
-    pass
-import numpy as np
-from qtpy.QtWidgets import QMenu
-from qtpy.QtCore import QTimer
 
-from napari.utils.translations import trans
 from toolz import curry
 from typing import Callable
-from magicgui import magicgui
+
+try:
+    import napari._qt
+    from qtpy.QtWidgets import QMenu
+except ModuleNotFoundError as e:
+    warnings.warn("Importing QT failed; now introducing dummy definitions of QMenu class and register_function decorator.")
+
+    # Define dummy class QMenu, to be used in ToolsMenu below
+    class QMenu:
+        pass
+
+    # Define dummy register_action decorator, so that it can be imported and
+    # used in packages that do not depend on QT
+    @curry
+    def register_action(func: Callable, menu:str, *args, **kwargs) -> Callable:
+        return func
+
+
+import numpy as np
+
 import inspect
 from functools import wraps
 
@@ -21,6 +30,9 @@ __version__ = "0.1.17"
 class ToolsMenu(QMenu):
 
     def __init__(self, window: 'Window', viewer):
+        from napari.utils.translations import trans
+        import napari
+
         super().__init__(trans._('&Tools'), window._qt_window)
         self.viewer = viewer
 
@@ -81,7 +93,9 @@ def make_gui(func, viewer, *args, **kwargs):
     gui = None
 
     from napari.types import ImageData, LabelsData, PointsData, SurfaceData
+    from magicgui import magicgui
     import inspect
+
     sig = inspect.signature(func)
 
     @wraps(func)
