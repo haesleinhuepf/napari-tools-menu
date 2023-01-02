@@ -39,6 +39,8 @@ class ToolsMenu(QMenu):
         entries = sorted(list(ToolsMenu.menus.keys()))
 
         all_sub_menus = {}
+        self.menu_count = 0
+        self.menu_libraries = {}
 
         for k in entries:
             sub_menus = k.split(">")
@@ -52,6 +54,10 @@ class ToolsMenu(QMenu):
 
             menu = all_sub_menus[sub_menus[0]]
             self.make_sub_sub_menu(menu, sub_menus[1], window, ToolsMenu.menus[k])
+
+        print("num menus", self.menu_count)
+        print("num libraries", len(self.menu_libraries.keys()))
+        print("libraries", self.menu_libraries.keys())
 
     def make_sub_sub_menu(self, menu, title, window, action_type_tuple):
         sub_sub_menu = menu.addAction(title)
@@ -86,6 +92,8 @@ class ToolsMenu(QMenu):
                 # workaround for https://github.com/napari/napari/issues/4348
                 dw._close_btn = False
 
+        self.menu_count = self.menu_count + 1
+        self.menu_libraries[str(action_type_tuple[0].__module__).split(".")[0]] = 1
         sub_sub_menu.triggered.connect(func)
         return sub_sub_menu
 
