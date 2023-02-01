@@ -25,7 +25,7 @@ import numpy as np
 import inspect
 from functools import wraps
 
-__version__ = "0.1.18"
+__version__ = "0.1.19"
 
 class ToolsMenu(QMenu):
 
