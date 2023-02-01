@@ -6,7 +6,7 @@ from typing import Callable
 try:
     import napari._qt
     from qtpy.QtWidgets import QMenu
-except ModuleNotFoundError as e:
+except Exception as e:
     warnings.warn("Importing QT failed; now introducing dummy definitions of QMenu class and register_function decorator.")
 
     # Define dummy class QMenu, to be used in ToolsMenu below
