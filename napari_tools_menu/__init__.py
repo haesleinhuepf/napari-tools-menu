@@ -218,6 +218,6 @@ try:
         napari._qt.qt_main_window.Window._add_menus = _add_menus
 except:
     if not ever_warned:
-        warnings.warn("Error in monkey patching napari. Please let @haesleinleinhuepf know at\nhttps://github.com/haesleinhuepf/napari-tools-menu/issues")
+        #warnings.warn("Error in monkey patching napari. Please let @haesleinleinhuepf know at\nhttps://github.com/haesleinhuepf/napari-tools-menu/issues")
         ever_warned = True
 
