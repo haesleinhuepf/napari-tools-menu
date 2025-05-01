@@ -95,6 +95,8 @@ You can install `napari-tools-menu` via [pip]:
 
     pip install napari-tools-menu
 
+Note: This plugin is not compatible with napari 0.6.0 or later.
+
 ## Contributing
 
 Contributions are very welcome. Tests can be run with [pytest], please ensure
